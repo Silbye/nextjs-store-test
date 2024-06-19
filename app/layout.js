@@ -1,5 +1,8 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Header from "./components/Header";
+import GlobalState from "./context/CartContext";
+import PageState from "./context/PageContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -11,7 +14,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <PageState>
+        <GlobalState>
+          <body className={inter.className}>
+            <Header />
+            <div className="container">{children}</div>
+          </body>
+        </GlobalState>
+      </PageState>
     </html>
   );
 }
