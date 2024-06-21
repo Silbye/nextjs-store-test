@@ -8,14 +8,28 @@ export async function generateMetadata({ params, searchParams }) {
   };
 }
 
-async function fetchData(id) {
-  const res = await fetch("https://picsum.photos/id/" + id + "/info");
-  const result = await res.json();
-  return result;
+export async function generateStaticParams() {
+  const res = await fetch("https://picsum.photos/v2/list/");
+
+  const posts = await res.json();
+
+  return posts.map((post) => ({
+    id: post.id,
+  }));
 }
 
-const PagePost = async ({ params: { id } }) => {
-  const post = await fetchData(id);
+async function fetchData(id) {
+  const res = await fetch("https://picsum.photos/id/" + id + "/info", {
+    next: {
+      revalidate: 60,
+    },
+  });
+
+  return res.json();
+}
+
+const PagePost = async ({ params }) => {
+  const post = await fetchData(params.id);
 
   return <Post post={post} />;
 };
